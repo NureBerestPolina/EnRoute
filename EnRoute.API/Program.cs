@@ -17,6 +17,7 @@ using EnRoute.Common.Configuration;
 using EnRoute.Infrastructure.Services.Interfaces;
 using EnRoute.Infrastructure.Services;
 using EnRoute.API.Contracts.Auth.Requests;
+using EnRoute.API.Contracts.DomainValidators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -114,6 +115,7 @@ builder.Services.AddControllers(c =>
 builder.Services.AddAutoMapper(typeof(EnRoute.API.MappingProfile).Assembly);
 
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<TechInspectionRequestValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddEndpointsApiExplorer();
