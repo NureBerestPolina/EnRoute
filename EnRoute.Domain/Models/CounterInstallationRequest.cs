@@ -16,6 +16,7 @@ namespace EnRoute.Domain.Models
         public int CellCount { get; set; }
         public int CellWithTempControlCount { get; set; }
         public Guid OrganizationId { get; set; }
+        public Organization Organization { get; set; }
         public DateTime RequestedTime { get; set; } = DateTime.UtcNow;
         public DateTime? FulfilledTime { get; set; }
         public RequestStatus RequestStatus { get; set; } = RequestStatus.Unseen;
