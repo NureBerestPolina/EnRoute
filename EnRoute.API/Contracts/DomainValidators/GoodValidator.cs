@@ -23,8 +23,8 @@ namespace EnRoute.API.Contracts.DomainValidators
             RuleFor(good => good.Price)
                 .GreaterThan(0).WithMessage("Price must be greater than 0.");
 
-            RuleFor(good => good.AmountInStosk)
-                .GreaterThanOrEqualTo(0).WithMessage("AmountInStosk cannot be negative.");
+            RuleFor(good => good.AmountInStock)
+                .GreaterThanOrEqualTo(0).WithMessage("AmountInStock cannot be negative.");
         }
     }
 }

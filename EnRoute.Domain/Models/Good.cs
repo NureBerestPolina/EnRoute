@@ -15,7 +15,7 @@ namespace EnRoute.Domain.Models
         public string MeasurementUnit { get; set; }
         public bool NeedsCooling { get; set; } = false;
         public decimal Price { get; set; }
-        public double AmountInStosk { get; set; }
+        public double AmountInStock { get; set; }
         public Guid ProducerId { get; set; }
         public Producer Producer { get; set; }
         public Guid CategoryId { get; set; }
