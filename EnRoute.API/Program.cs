@@ -187,6 +187,9 @@ static IEdmModel GetEdmModel()
     builder.EntitySet<User>("Users").EntityType.Count().Filter().Expand().Select();
     builder.EntitySet<Organization>("Organizations").EntityType.Count().Filter().Expand().Select();
     builder.EntitySet<Order>("Orders").EntityType.Count().Filter().Expand().Select();
+    builder.EntitySet<Good>("Goods").EntityType.Count().Filter().Expand().Select();
+    builder.EntitySet<Producer>("Producers").EntityType.Count().Filter().Expand().Select();
+    builder.EntitySet<Category>("Categories").EntityType.Count().Filter().Expand().Select();
     builder.EntitySet<TechInspectionRequest>("TechInspectionRequests").EntityType.Count().Filter().Expand().Select();
 
     builder.EnableLowerCamelCase();
