@@ -23,7 +23,7 @@ namespace EnRoute.API.Contracts.DomainValidators
                 .GreaterThan(0).WithMessage("CellCount must be greater than 0.");
 
             RuleFor(request => request.CellWithTempControlCount)
-                .GreaterThanOrEqualTo(request => request.CellCount).WithMessage("CellWithTempControlCount must be greater or equal to CellCount.");
+                .LessThanOrEqualTo(request => request.CellCount).WithMessage("CellWithTempControlCount must be less or equal to CellCount.");
 
             RuleFor(r => r.RequestStatus)
                 .Must(r => StatusesAllowed.Contains(r)).WithMessage("Request status is invalid. Allowed values are: " + string.Join(", ", StatusesAllowed));

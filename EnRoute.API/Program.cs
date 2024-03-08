@@ -43,6 +43,8 @@ builder.Services.AddSingleton(sysadminSettings);
 builder.Services.AddSingleton(cellConnectionSettings);
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICounterService, CounterService>();
+
 
 builder.Services.AddHttpClient();
 
@@ -191,6 +193,9 @@ static IEdmModel GetEdmModel()
     builder.EntitySet<Producer>("Producers").EntityType.Count().Filter().Expand().Select();
     builder.EntitySet<Category>("Categories").EntityType.Count().Filter().Expand().Select();
     builder.EntitySet<TechInspectionRequest>("TechInspectionRequests").EntityType.Count().Filter().Expand().Select();
+    builder.EntitySet<PickupCounter>("PickupCounters").EntityType.Count().Filter().Expand().Select();
+    builder.EntitySet<CounterInstallationRequest>("CounterInstallationRequests").EntityType.Count().Filter().Expand().Select();
+    builder.EntitySet<CounterDeinstallationRequest>("CounterDeinstallationRequests").EntityType.Count().Filter().Expand().Select();
 
     builder.EnableLowerCamelCase();
     return builder.GetEdmModel();

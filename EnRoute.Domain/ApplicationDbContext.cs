@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace EnRoute.Domain
 {
@@ -32,6 +33,8 @@ namespace EnRoute.Domain
             builder.Entity<Order>().HasOne(o => o.Customer).WithMany().HasForeignKey(o => o.CustomerId).OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<OrderItem>().HasOne(o => o.Order).WithMany(o => o.Items).HasForeignKey(o => o.OrderId).OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Cell>().HasOne(c => c.Counter).WithMany(p => p.Cells).HasForeignKey(c => c.CounterId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
