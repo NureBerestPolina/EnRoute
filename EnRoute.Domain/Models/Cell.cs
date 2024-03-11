@@ -15,5 +15,6 @@ namespace EnRoute.Domain.Models
         public Guid CounterId { get; set; }
         public PickupCounter? Counter { get; set; }
         public string CellOpenKey { get; set; } = DateTime.UtcNow.ToString();
+        public List<Order> Orders { get; set; } = new List<Order>();
     }
 }
