@@ -31,7 +31,7 @@ namespace EnRoute.API.Controllers
         public async Task<IActionResult> GetAdminStatistics()
         {
             var statistics = await statisticsService.GetAllOrganizationsStatisticsAsync();
-            var statisticsResponse = mapper.Map<List<GetOrganizationStatisticsResponse>>(statistics);
+            var statisticsResponse = mapper.Map<List<GetStatisticsResponse>>(statistics);
 
             return Ok(statisticsResponse);
         }

@@ -25,28 +25,28 @@ namespace EnRoute.Infrastructure.Services
         public async Task<List<GetStatisticsDto>> GetAllOrganizationsStatisticsAsync()
         {
             var statistics = await dbContext.Organizations
-            .Include(org => org.Manager)
-            .Include(org => org.Counters)
-            .ThenInclude(counter => counter.Cells)
-            .Include(org => org.Goods)
-            .Include(org => org.Manager)
-            .Select(org => new GetStatisticsDto
-            {
-                OrganizationName = org.Name,
-                ManagerName = org.Manager.Name,
-                Contact = org.Manager.Email, 
-                PickupCountersCount = org.Counters.Count,
-                OrdersCount = org.Counters
-                    .SelectMany(counter => counter.Cells.SelectMany(cell => cell.Orders))
-                    .Where(order => order.OrderedDate.Month == DateTime.UtcNow.Month)
-                    .Count(),
-                TotalSalesSum = org.Counters
-                    .SelectMany(counter => counter.Cells.SelectMany(cell => cell.Orders))
-                    .Where(order => order.OrderedDate.Month == DateTime.UtcNow.Month)
-                    .SelectMany(order => order.Items)
-                    .Sum(item => item.GoodOrdered.Price * item.Count)
-            })
-            .ToListAsync();
+                                            .Include(org => org.Manager)
+                                            .Include(org => org.Counters)
+                                            .ThenInclude(counter => counter.Cells)
+                                            .Include(org => org.Goods)
+                                            .Include(org => org.Manager)
+                                            .Select(org => new GetStatisticsDto
+                                            {
+                                                OrganizationName = org.Name,
+                                                ManagerName = org.Manager.Name,
+                                                Contact = org.Manager.Email,
+                                                PickupCountersCount = org.Counters.Count,
+                                                OrdersCount = org.Counters
+                                                    .SelectMany(counter => counter.Cells.Select(cell => cell.Order))
+                                                    .Where(order => order != null && order.OrderedDate.Month == DateTime.UtcNow.Month)
+                                                    .Count(),
+                                                TotalSalesSum = org.Counters
+                                                    .SelectMany(counter => counter.Cells.Select(cell => cell.Order))
+                                                    .Where(order => order != null && order.OrderedDate.Month == DateTime.UtcNow.Month)
+                                                    .SelectMany(order => order.Items)
+                                                    .Sum(item => item.GoodOrdered.Price * item.Count)
+                                            })
+                                            .ToListAsync();
 
             return statistics;
         }
@@ -54,33 +54,33 @@ namespace EnRoute.Infrastructure.Services
         public async Task<List<GetOrganizationStatisticsDto>> GetOrganizationStatisticsAsync(Guid organizationId)
         {
             var organizationStatistics = await dbContext.PickupCounters
-            .Where(counter => counter.OrganizationId == organizationId)
-            .Select(counter => new GetOrganizationStatisticsDto
-            {
-                PickupCounterId = counter.Id,
-                PickupCounterAddress = counter.Address,
-                PickupCounterPlacementDescription = counter.PlacementDescription,
-                OrdersCount = counter.Cells
-                    .SelectMany(cell => cell.Orders)
-                    .Where(order => order.OrderedDate.Month == DateTime.UtcNow.Month)
-                    .Count(),
-                TotalSalesSum = counter.Cells
-                    .SelectMany(cell => cell.Orders)
-                    .Where(order => order.OrderedDate.Month == DateTime.UtcNow.Month)
-                    .SelectMany(order => order.Items)
-                    .Sum(item => item.GoodOrdered.Price * item.Count),
-                MostPopularGood = counter.Cells
-                    .SelectMany(cell => cell.Orders)
-                    .Where(order => order.OrderedDate.Month == DateTime.UtcNow.Month)
-                    .SelectMany(order => order.Items)
-                    .GroupBy(item => item.GoodOrdered)
-                    .OrderByDescending(group => group.Sum(item => item.Count))
-                    .Select(group => group.Key)
-                    .FirstOrDefault()
-            })
-            .ToListAsync();
+                                                        .Where(counter => counter.OrganizationId == organizationId)
+                                                        .Select(counter => new GetOrganizationStatisticsDto
+                                                        {
+                                                            PickupCounterId = counter.Id,
+                                                            PickupCounterAddress = counter.Address,
+                                                            PickupCounterPlacementDescription = counter.PlacementDescription,
+                                                            OrdersCount = counter.Cells
+                                                                .Select(cell => cell.Order)
+                                                                .Where(order => order != null && order.OrderedDate.Month == DateTime.UtcNow.Month)
+                                                                .Count(),
+                                                            TotalSalesSum = counter.Cells
+                                                                .Select(cell => cell.Order)
+                                                                .Where(order => order != null && order.OrderedDate.Month == DateTime.UtcNow.Month)
+                                                                .SelectMany(order => order.Items)
+                                                                .Sum(item => item.GoodOrdered.Price * item.Count),
+                                                            MostPopularGood = counter.Cells
+                                                                .Select(cell => cell.Order)
+                                                                .Where(order => order != null && order.OrderedDate.Month == DateTime.UtcNow.Month)
+                                                                .SelectMany(order => order.Items)
+                                                                .GroupBy(item => item.GoodOrdered)
+                                                                .OrderByDescending(group => group.Sum(item => item.Count))
+                                                                .Select(group => group.Key)
+                                                                .FirstOrDefault()
+                                                        })
+                                                        .ToListAsync();
 
-            return organizationStatistics;
-        }
+                                                            return organizationStatistics;
+                                                        }
     }
 }

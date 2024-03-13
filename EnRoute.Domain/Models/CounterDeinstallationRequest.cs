@@ -11,7 +11,7 @@ namespace EnRoute.Domain.Models
     public class CounterDeinstallationRequest : IODataEntity
     {
         public Guid Id { get; set; }
-        public DateTime RequestedTime { get; set; }
+        public DateTime RequestedTime { get; set; } = DateTime.UtcNow;
         public DateTime? FulfilledTime { get; set; }
         public RequestStatus RequestStatus { get; set; } = RequestStatus.Unseen;
         public Guid CounterId { get; set; }
