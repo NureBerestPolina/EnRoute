@@ -59,6 +59,7 @@ namespace EnRoute.API.Controllers
                         {
                             // Change order status to cancelled
                             cell.Order.Status = OrderStatus.CancelledByShop;
+                            //AppDbContext.Orders.Remove(cell.Order);
                         }
                     }
                 }
