@@ -14,6 +14,8 @@ namespace EnRoute.API
             CreateMap<RegisterCompanyRequest, RegisterCommand>();
             CreateMap<GetStatisticsDto, GetStatisticsResponse>();
             CreateMap<GetOrganizationStatisticsDto, GetOrganizationStatisticsResponse>();
+            CreateMap<GetDeliveryDestinationDto, GetDeliveryDestinationResponse>();
+            CreateMap<GetCounterDeliveryDto, GetCounterDeliveryResponse>();
         }
     }
 }
