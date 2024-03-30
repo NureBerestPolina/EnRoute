@@ -32,7 +32,8 @@ namespace EnRoute.API.Controllers
 
             if (availableGoods.Any())
             {
-                return Ok(availableGoods);
+                var uniqueGoods = availableGoods.GroupBy(g => g.Id).Select(group => group.First()).ToList();
+                return Ok(uniqueGoods);
             }
 
             return Ok(new List<Good>());
