@@ -18,6 +18,7 @@ using EnRoute.Infrastructure.Services.Interfaces;
 using EnRoute.Infrastructure.Services;
 using EnRoute.API.Contracts.Auth.Requests;
 using EnRoute.API.Contracts.DomainValidators;
+using EnRoute.Infrastructure.Strategies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +47,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICounterService, CounterService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
-
+builder.Services.AddScoped<IRoleStrategyFactory, RoleStrategyFactory>();
 
 builder.Services.AddHttpClient();
 

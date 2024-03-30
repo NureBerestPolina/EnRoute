@@ -6,6 +6,7 @@ using EnRoute.Infrastructure.Commands;
 using EnRoute.Infrastructure.Constants;
 using EnRoute.Infrastructure.Extentions;
 using EnRoute.Infrastructure.Services.Interfaces;
+using EnRoute.Infrastructure.Strategies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Authentication;
@@ -20,13 +21,15 @@ namespace EnRoute.Infrastructure.Services
         private readonly UserManager<User> userManager;
         private readonly JwtSettings jwtSettings;
         private readonly IJwtTokenService jwtTokenService;
+        private readonly IRoleStrategyFactory roleStrategyFactory;
 
-        public AuthService(ApplicationDbContext dbContext, UserManager<User> userManager, JwtSettings jwtSettings, IJwtTokenService jwtTokenService)
+        public AuthService(ApplicationDbContext dbContext, UserManager<User> userManager, JwtSettings jwtSettings, IJwtTokenService jwtTokenService, IRoleStrategyFactory roleStrategyFactory)
         {
             this.dbContext = dbContext;
             this.userManager = userManager;
             this.jwtSettings = jwtSettings;
             this.jwtTokenService = jwtTokenService;
+            this.roleStrategyFactory = roleStrategyFactory;
         }
 
         public async Task<(string Token, string RefreshToken)> GenerateTokenForUserAsync(User user)
@@ -94,9 +97,10 @@ namespace EnRoute.Infrastructure.Services
                 {
                     throw new ArgumentException($"Unexpected error during role claim assignment: {string.Join(", ", claimAssignmentResult.Errors)}.", nameof(command.Role));
                 }
-
-                // May be factory or some dictionary with strategies. For now lets keep it simple.
-                switch (command.Role.ToLower())
+                await dbContext.SaveChangesAsync();
+                var strategy = roleStrategyFactory.CreateStrategy(command.Role.ToLower());
+                await strategy.ExecuteRoleSpecificActionAsync(createdUser, command, dbContext);
+                /*switch (command.Role.ToLower())
                 {
                     case UserRoles.OrganizationManager:
                         var organization = new Organization
@@ -113,7 +117,7 @@ namespace EnRoute.Infrastructure.Services
                         break;
                     default:
                         throw new ArgumentException($"Registration for role {command.Role} is not supported.", nameof(command.Role));
-                }
+                }*/
 
                 await dbContext.SaveChangesAsync();
             }
