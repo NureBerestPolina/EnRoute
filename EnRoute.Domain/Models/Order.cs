@@ -10,9 +10,9 @@ namespace EnRoute.Domain.Models
         public DateTime? FinalizedDate { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.New;
         public Guid AssignedCellId { get; set; }
-        public Cell AssignedCell { get; set; }
+        public Cell? AssignedCell { get; set; }
         public Guid CustomerId { get; set; }
-        public User Customer { get; set; }
+        public User? Customer { get; set; }
         public List<OrderItem>? Items { get; set; } = new List<OrderItem>();
     }
 }

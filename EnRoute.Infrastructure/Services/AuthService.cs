@@ -14,7 +14,9 @@ using System.Security.Claims;
 
 namespace EnRoute.Infrastructure.Services
 {
-
+    /// <summary>
+    /// Service handling authentication operations.
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext dbContext;
@@ -32,6 +34,11 @@ namespace EnRoute.Infrastructure.Services
             this.roleStrategyFactory = roleStrategyFactory;
         }
 
+        /// <summary>
+        /// Generates a token for the given user.
+        /// </summary>
+        /// <param name="user">User entity for which the token is generated.</param>
+        /// <returns>A tuple containing the generated token and its refresh token.</returns>
         public async Task<(string Token, string RefreshToken)> GenerateTokenForUserAsync(User user)
         {
             var authClaims = new List<Claim>
@@ -67,6 +74,11 @@ namespace EnRoute.Infrastructure.Services
             return (serializedToken, refreshToken);
         }
 
+        /// <summary>
+        /// Registers a new user with the provided registration information.
+        /// </summary>
+        /// <param name="command">Registration command containing user information.</param>
+        /// <returns>The newly registered user.</returns>
         public async Task<User> RegisterUserAsync(RegisterCommand command)
         {
             var user = new User()
@@ -100,30 +112,11 @@ namespace EnRoute.Infrastructure.Services
                 await dbContext.SaveChangesAsync();
                 var strategy = roleStrategyFactory.CreateStrategy(command.Role.ToLower());
                 await strategy.ExecuteRoleSpecificActionAsync(createdUser, command, dbContext);
-                /*switch (command.Role.ToLower())
-                {
-                    case UserRoles.OrganizationManager:
-                        var organization = new Organization
-                        {
-                            Manager = createdUser,
-                            Name = command.OrganizationName,
-                            Description = command.Description
-                        };
-                        dbContext.Organizations.Add(organization);
-                        break;
-                    case UserRoles.Customer:
-                        break;
-                    case UserRoles.SystemAdministrator:
-                        break;
-                    default:
-                        throw new ArgumentException($"Registration for role {command.Role} is not supported.", nameof(command.Role));
-                }*/
-
+               
                 await dbContext.SaveChangesAsync();
             }
             catch (Exception)
             {
-                // Rollback user manages changes if transaction fails.
                 await userManager.DeleteAsync(createdUser);
                 throw;
             }
@@ -131,6 +124,12 @@ namespace EnRoute.Infrastructure.Services
             return createdUser;
         }
 
+        /// <summary>
+        /// Refreshes the provided JWT token using the refresh token.
+        /// </summary>
+        /// <param name="token">Expired JWT token.</param>
+        /// <param name="refreshToken">Refresh token.</param>
+        /// <returns>A tuple containing the new token and refresh token.</returns>
         public async Task<(string Token, string RefreshToken)> RefreshToken(string token, string refreshToken)
         {
             var principal = this.jwtTokenService.GetPrincipalFromExpiredToken(token);
